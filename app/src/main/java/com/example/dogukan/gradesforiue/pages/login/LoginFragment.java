@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.example.dogukan.gradesforiue.Pref;
 import com.example.dogukan.gradesforiue.R;
 import com.example.dogukan.gradesforiue.pages.LoggedInActivities.MainActivity;
 import com.example.dogukan.gradesforiue.rest.RestClient;
@@ -54,14 +55,29 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
     @BindView(R.id.btnlogin)
     Button mBtnLogin;
 
+
+    private MaterialDialog dialogProgress;
+
+    private void enableUI(boolean isEnabled)
+    {
+        if(isEnabled)
+        {
+            dialogProgress.hide();
+        }
+        else
+        {
+            dialogProgress.show();
+        }
+    }
+
     public LoginFragment() {
         // Required empty public constructor
     }
 
     public static LoginFragment newInstance() {
-        
+
         Bundle args = new Bundle();
-        
+
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
         return fragment;
@@ -74,6 +90,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         ButterKnife.bind(this,v);
         mBtnLogin.setOnClickListener(this);
+
+        dialogProgress=new MaterialDialog.Builder(getActivity())
+                .progress(true,0)
+                .cancelable(false)
+                .title(getResources().getString(R.string.waitabit))
+                .content(getResources().getString(R.string.workingonlogin))
+                .build();
+
+        checkIfLoggedIn();
+
+
         return v;
     }
 
@@ -84,12 +111,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         {
             case R.id.btnlogin:
                 loginFirstStep();
-            break;
+                break;
         }
     }
 
     private void loginFirstStep()
     {
+        enableUI(false);
         String userid = mUsername.getText().toString();
         String pass = mPassword.getText().toString();
         boolean rememberme = mRememberMe.isChecked();
@@ -103,7 +131,40 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                         Document doc = Jsoup.parse(response.body().string());
                         if(!doc.select("input[name=ltype]").isEmpty())
                         {
-                            loginSecondStep(doc.select("input[name=ltype]").attr("value"));
+                            final String ltype=doc.select("input[name=ltype]").attr("value");
+                            if(Pref.getPin().equals("!"))
+                            {
+                                loginSecondStep(ltype);
+                            }
+                            else
+                            {
+                                RestClient.getService().loginSecondPart(Pref.getPin(),ltype,"Login").enqueue(new Callback<ResponseBody>() {
+                                    @Override
+                                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                        if(response.body()!=null)
+                                        {
+                                            enableUI(true);
+                                            if(isLoggedInRenderer(response.body()))
+                                            {
+                                                Intent loggedIn = new Intent(getActivity(), MainActivity.class);
+                                                getActivity().startActivity(loggedIn);
+                                                getActivity().finish();
+                                                getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                                            }
+                                            else
+                                            {
+                                                loginSecondStep(ltype);
+                                                Snackbar.make(mContent,getString(R.string.couldnt_login),Snackbar.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                    }
+                                });
+                            }
                         }
                         else
                         {
@@ -126,34 +187,37 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
     private void loginSecondStep(final String ltype)
     {
+        enableUI(true);
         new MaterialDialog.Builder(getActivity())
                 .input(getString(R.string.typeyourpinhere), "", new MaterialDialog.InputCallback() {
                     @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
+                    public void onInput(@NonNull MaterialDialog dialog, final CharSequence input) {
+
+
                         RestClient.getService().loginSecondPart(input.toString(),ltype,"Login").enqueue(new Callback<ResponseBody>() {
                             @Override
                             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                                 if(response.body()!=null)
                                 {
-                                    try
+                                    enableUI(true);
+                                    if(isLoggedInRenderer(response.body()))
                                     {
-                                        Document doc = Jsoup.parse(response.body().string());
-                                        if(doc.title().toLowerCase().contains("student"))
+                                        if(mRememberMe.isChecked())
                                         {
-                                            Intent loggedIn = new Intent(getActivity(), MainActivity.class);
-                                            getActivity().startActivity(loggedIn);
-                                            getActivity().finish();
-                                            getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                                            Pref.setPassword(mPassword.getText().toString());
+                                            Pref.setUsername(mUsername.getText().toString());
+                                            Pref.setPin(input.toString());
                                         }
-                                        else
-                                        {
-                                            loginSecondStep(ltype);
-                                            Snackbar.make(mContent,getString(R.string.couldnt_login),Snackbar.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                    catch (IOException d)
-                                    {
 
+                                        Intent loggedIn = new Intent(getActivity(), MainActivity.class);
+                                        getActivity().startActivity(loggedIn);
+                                        getActivity().finish();
+                                        getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                                    }
+                                    else
+                                    {
+                                        loginSecondStep(ltype);
+                                        Snackbar.make(mContent,getString(R.string.couldnt_login),Snackbar.LENGTH_SHORT).show();
                                     }
                                 }
                             }
@@ -166,4 +230,78 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                     }
                 }).build().show();
     }
+
+    void checkIfLoggedIn()
+    {
+        enableUI(false);
+        RestClient.getService().getHelp().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if(response.body()!=null)
+                {
+
+                    if(isLoggedInRenderer(response.body()))
+                    {
+
+                        Intent loggedIn = new Intent(getActivity(), MainActivity.class);
+                        getActivity().startActivity(loggedIn);
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+
+                    }
+                    else
+                    {
+                        enableUI(true);
+                        if(!Pref.getUsername().equals("!"))
+                        {
+                            mUsername.setText(Pref.getUsername());
+                            mPassword.setText(Pref.getPassword());
+                            loginFirstStep();
+                        }
+
+                    }
+                }
+
+                if(response.code()==404)
+                {
+                    enableUI(true);
+                    if(!Pref.getUsername().equals("!"))
+                    {
+                        mUsername.setText(Pref.getUsername());
+                        mPassword.setText(Pref.getPassword());
+                        loginFirstStep();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private boolean isLoggedInRenderer(ResponseBody body)
+    {
+        boolean isloggedin=false;
+        try
+        {
+            Document doc = Jsoup.parse(body.string());
+            if(doc.title().toLowerCase().contains("student"))
+            {
+                isloggedin=true;
+            }
+            else
+            {
+                isloggedin=false;
+            }
+        }
+        catch (IOException d)
+        {
+
+        }
+        return isloggedin;
+    }
+
 }

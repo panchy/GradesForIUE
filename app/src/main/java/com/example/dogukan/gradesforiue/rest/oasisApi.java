@@ -23,7 +23,20 @@ public interface oasisApi {
     @POST("login.php")
     Call<ResponseBody> loginSecondPart(@Field("ssno") String pin,@Field("ltype") String ltype,@Field("Submit") String submit);
 
-    @GET("student/courses/my_grades/my_grades_view.php")
-    Call<ResponseBody> getGrades(@QueryMap Map<String,String> map);
+    @GET("logout.php")
+    Call<ResponseBody> logout();
+
+    @GET("student/courses/my_grades/my_grades_view.php?p=Student_Courses")
+    Call<ResponseBody> getGrades();
+
+    @FormUrlEncoded
+    @POST("student/courses/my_grades/my_grades_view.php?p=Student_Courses")
+    Call<ResponseBody> getGradesSearch(@Field("year") String year,@Field("semester1") String semester,@Field("formposted") String formposted);
+
+    @GET("student/help/index.php")
+    Call<ResponseBody> getHelp();
+
+    @GET("student/profile/index.php")
+    Call<ResponseBody> getProfile();
 
 }

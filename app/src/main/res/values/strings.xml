@@ -8,4 +8,14 @@
     <string name="login">LOGIN</string>
     <string name="couldnt_login">Couldn\'t Login!</string>
     <string name="typeyourpinhere">Type your pin here</string>
+    <string name="version">0.1</string>
+    <string name="waitabit">Wait a bit</string>
+    <string name="workingonlogin">Working on login.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="selectyear">Select Year</string>
+    <string name="selectsemester">Select Semester</string>
+    <string name="selectys"><![CDATA[Select Year & Semester]]></string>
+    <string name="search">Search</string>
 </resources>

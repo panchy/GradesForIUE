@@ -44,6 +44,13 @@ public class CookieJarExtended implements CookieJar {
             }
         }
 
+
+
+    }
+
+    @Override
+    public List<Cookie> loadForRequest(HttpUrl url) {
+
         localcookies.clear();
         if(!Pref.getPHPSESSIDcookie().equals("!"))
         {
@@ -59,10 +66,6 @@ public class CookieJarExtended implements CookieJar {
         }
 
 
-    }
-
-    @Override
-    public List<Cookie> loadForRequest(HttpUrl url) {
         return localcookies;
     }
 }

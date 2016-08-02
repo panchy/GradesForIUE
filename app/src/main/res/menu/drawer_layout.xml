@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_grades_btn"
+            android:title="Grades"/>
+
+
+    </group>
+
+    <!--   <item
+
+           android:id="@+id/nav_quit"
+           android:icon="@drawable/ic_exit_to_app_black_24dp"
+           android:title="@string/action_logout"/>
+   -->
 </menu>
