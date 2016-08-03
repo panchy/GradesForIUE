@@ -5,8 +5,11 @@
 
         <item
             android:id="@+id/drawer_grades_btn"
-            android:title="Grades"/>
+            android:title="@string/grades"/>
 
+        <item
+            android:id="@+id/drawer_inbox_btn"
+            android:title="@string/messages"/>
 
     </group>
 

@@ -7,6 +7,7 @@
     <color name="primary_text">#212121</color>
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
+    <color name="fab_expanded_bg">#89ffffff</color>
     <color name="divider">#B6B6B6</color>
     <color name="appBg">#d7d7d7</color>
 </resources>

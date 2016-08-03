@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:theme="@style/AppTheme_withActionBar"
             android:name=".pages.login.LoginActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
@@ -22,7 +23,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".pages.LoggedInActivities.MainActivity"
+        <activity
+            android:name=".pages.LoggedInActivities.MainActivity"
             android:screenOrientation="portrait"
             />
     </application>

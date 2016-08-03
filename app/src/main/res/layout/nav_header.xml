@@ -17,11 +17,19 @@
         />
 
     <TextView
-        android:id="@+id/nav_header_username"
+        android:id="@+id/nav_header_realname"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:textColor="@color/icons"
+        android:text="Username" />
+
+    <TextView
+        android:id="@+id/nav_header_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/secondary_text"
         android:text="Username" />
 
 </LinearLayout>

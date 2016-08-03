@@ -11,11 +11,20 @@
     <string name="version">0.1</string>
     <string name="waitabit">Wait a bit</string>
     <string name="workingonlogin">Working on login.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="navigation_drawer_open">Drawer Open</string>
+    <string name="navigation_drawer_close">Drawer Closed</string>
     <string name="selectyear">Select Year</string>
     <string name="selectsemester">Select Semester</string>
     <string name="selectys"><![CDATA[Select Year & Semester]]></string>
     <string name="search">Search</string>
+    <string name="messages">Messages</string>
+    <string name="grades">Grades</string>
+    <string name="inbo">INBOX</string>
+    <string name="outbox">OUTBOX</string>
+    <string name="compose">COMPOSE</string>
+    <string name="filter_by_sender">Filter by sender</string>
+    <string name="filter_by_subject">Filter by subject</string>
+    <string name="filter_by_message">Filter by message</string>
+    <string name="search_">Search</string>
+    <string name="search__">Search</string>
 </resources>

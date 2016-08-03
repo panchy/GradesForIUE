@@ -55,4 +55,7 @@ public class Pref {
     {
         return getSettings().getString("pin","!");
     }
+
+
+
 }

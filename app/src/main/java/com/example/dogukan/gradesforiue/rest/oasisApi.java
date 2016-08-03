@@ -39,4 +39,15 @@ public interface oasisApi {
     @GET("student/profile/index.php")
     Call<ResponseBody> getProfile();
 
+    @FormUrlEncoded
+    @POST("student/messages/private_messages/inbox.php")
+    Call<ResponseBody> getMessages(@Field("cur_page") String page,@Field("sender") String sender,@Field("subject") String subject,@Field("msg") String msg);
+
+    @FormUrlEncoded
+    @POST("student/messages/private_messages/outbox.php")
+    Call<ResponseBody> getOutbox(@Field("cur_page") String page,@Field("sender") String sender,@Field("subject") String subject,@Field("msg") String msg);
+
+
+    @GET("student/messages/private_messages/search.php")
+    Call<ResponseBody> queryMessages(@QueryMap Map<String,String> map);
 }
